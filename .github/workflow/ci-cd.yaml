@@ -38,7 +38,6 @@ jobs:
         with:
           registry-type: public
 
-      # Build the Docker image and push it to Amazon ECR Public
       - name: Build and push Docker image
         id: docker_build
         run: |
