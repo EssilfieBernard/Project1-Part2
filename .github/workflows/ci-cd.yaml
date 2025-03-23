@@ -62,6 +62,7 @@ jobs:
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
+          aws-region: us-west-2
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: service
           cluster: Proj1Part2Cluster
