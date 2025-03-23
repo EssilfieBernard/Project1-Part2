@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class S3Service {
 
-    private final AmazonS3 s3Client;
+    private final AmazonS3 amazonS3;
 
     public String uploadImage(MultipartFile file, String description) throws IOException {
         String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
@@ -24,13 +24,13 @@ public class S3Service {
         metadata.setContentLength(file.getSize());
 
         String bucketName = "essilfie";
-        s3Client.putObject(new PutObjectRequest(
+        amazonS3.putObject(new PutObjectRequest(
                 bucketName,
                 fileName,
                 file.getInputStream(),
                 metadata
         ));
 
-        return s3Client.getUrl(bucketName, fileName).toString();
+        return amazonS3.getUrl(bucketName, fileName).toString();
     }
 }
