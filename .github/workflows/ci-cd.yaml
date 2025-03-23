@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Setup JDK for Spring Boot build
+      # Setup JDK for the Spring Boot build
       - name: Set up Java 17
         uses: actions/setup-java@v3
         with:
@@ -32,12 +32,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Login to Amazon ECR (public ECR is used here)
+      # Login to Amazon ECR Public (since a public repository is used)
       - name: Login to Amazon ECR Public
         uses: aws-actions/amazon-ecr-login@v2
         with:
           registry-type: public
 
+      # Build and push Docker image, and set the image as an output for later steps
       - name: Build and push Docker image
         id: docker_build
         run: |
@@ -46,5 +47,22 @@ jobs:
           docker build -t $IMAGE_URI .
           echo "Pushing image ${IMAGE_URI}"
           docker push $IMAGE_URI
+          echo "::set-output name=image::$IMAGE_URI"
 
-    
+      # Update the ECS Task Definition with the new image URI
+      - name: Update ECS Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: part2-container
+          image: ${{ steps.docker_build.outputs.image }}
+
+      # Deploy the updated task definition to ECS
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: service
+          cluster: Proj1Part2Cluster
+          wait-for-service-stability: true
