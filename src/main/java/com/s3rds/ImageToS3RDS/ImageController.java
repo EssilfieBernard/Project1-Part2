@@ -34,9 +34,9 @@ public class ImageController {
         String url = s3Service.uploadImage(file, description);
 
         ImageMetadata metadata = ImageMetadata.builder()
-                        .url(url)
-                                .description(description)
-                                        .uploadedAt(LocalDateTime.now())
+                .url(url)
+                .description(description)
+                .uploadedAt(LocalDateTime.now())
                 .build();
 
         return repository.save(metadata);
