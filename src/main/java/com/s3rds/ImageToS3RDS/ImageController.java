@@ -31,7 +31,7 @@ public class ImageController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("description") String description) throws IOException {
 
-        String url = s3Service.uploadImage(file, description);
+        String url = s3Service.uploadImage(file);
 
         ImageMetadata metadata = ImageMetadata.builder()
                 .url(url)
@@ -40,5 +40,11 @@ public class ImageController {
                 .build();
 
         return repository.save(metadata);
+    }
+
+    @DeleteMapping
+    public void deleteImage(@RequestParam("fileName") String fileName) {
+        String url = s3Service.deleteByUrl(fileName);
+        repository.deleteByUrl(url);
     }
 }

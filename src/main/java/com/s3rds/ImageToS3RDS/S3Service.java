@@ -13,17 +13,17 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
+    private final String bucketName = "essilfie";
 
     private final AmazonS3 amazonS3;
 
-    public String uploadImage(MultipartFile file, String description) throws IOException {
+    public String uploadImage(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
 
-        String bucketName = "essilfie";
         amazonS3.putObject(new PutObjectRequest(
                 bucketName,
                 fileName,
@@ -31,6 +31,11 @@ public class S3Service {
                 metadata
         ));
 
+        return amazonS3.getUrl(bucketName, fileName).toString();
+    }
+
+    public String deleteByUrl(String fileName) {
+        amazonS3.deleteObject(bucketName, fileName);
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
 }

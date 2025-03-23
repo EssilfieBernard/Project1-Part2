@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ImageMetadataRepository extends JpaRepository<ImageMetadata, Integer> {
     Page<ImageMetadata> findAllByOrderByUploadedAtDesc(Pageable pageable);
+    void deleteByUrl(String url);
 }
