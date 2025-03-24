@@ -34,9 +34,7 @@ public class S3Service {
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
 
-    public String deleteByUrl(String fileName) {
-        var url = amazonS3.getUrl(bucketName, fileName).toString();
+    public void deleteImage(String fileName) {
         amazonS3.deleteObject(bucketName, fileName);
-        return url;
     }
 }

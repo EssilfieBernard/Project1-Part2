@@ -1387,14 +1387,12 @@
         }
 
         // Updated deleteImage function: extracts the file name from the given URL
-        function deleteImage(url) {
-            // Extract the file name from the URL (everything after the last '/')
-            const fileName = url.split('/').pop();
+        function deleteImage(imageId) {
             if (!confirm("Are you sure you want to delete this image?")) {
                 return;
             }
 
-            fetch(`/api/images?fileName=${encodeURIComponent(fileName)}`, {
+            fetch(`/api/images/${imageId}`, {
                 method: "DELETE",
             })
                 .then((response) => {
@@ -1402,7 +1400,6 @@
                         throw new Error("Failed to delete image");
                     }
                     showToast("Image Deleted", "The image has been deleted successfully!", "success");
-                    // Reload the gallery after deletion
                     loadImages(currentPage, pageSize);
                 })
                 .catch((error) => {
@@ -1462,7 +1459,7 @@
                 // Event listener for delete action: calls deleteImage with the image URL
                 const deleteAction = galleryItem.querySelector(".delete-action");
                 deleteAction.addEventListener("click", () => {
-                    deleteImage(image.url);
+                    deleteImage(image.id);
                 });
 
                 // Also trigger modal on clicking the image container (optional)
