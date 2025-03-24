@@ -45,6 +45,7 @@ public class ImageController {
     @DeleteMapping
     public void deleteImage(@RequestParam("fileName") String fileName) {
         String url = s3Service.deleteByUrl(fileName);
-        repository.deleteByUrl(url);
+        var imageMetadata = repository.findByUrl(url).orElseThrow(() -> new RuntimeException("Image not found"));
+        repository.delete(imageMetadata);
     }
 }
