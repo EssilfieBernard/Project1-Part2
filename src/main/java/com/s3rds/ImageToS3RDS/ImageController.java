@@ -33,7 +33,7 @@ public class ImageController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("description") String description) throws IOException {
 
-        String url = s3Service.uploadImage(file);
+        String url = s3Service.uploadImage(file, description);
 
         ImageMetadata metadata = ImageMetadata.builder()
                 .url(url)

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Service
@@ -17,12 +18,15 @@ public class S3Service {
 
     private final AmazonS3 amazonS3;
 
-    public String uploadImage(MultipartFile file) throws IOException {
+    public String uploadImage(MultipartFile file, String description) throws IOException {
         String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
 
         ObjectMetadata metadata = new ObjectMetadata();
+        var userMetaData = new HashMap<String, String>();
+        userMetaData.put("description", description);
         metadata.setContentType(file.getContentType());
         metadata.setContentLength(file.getSize());
+        metadata.setUserMetadata(userMetaData);
 
         amazonS3.putObject(new PutObjectRequest(
                 bucketName,
